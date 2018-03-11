@@ -151,12 +151,7 @@
                 return this.filter === item;
             },
 
-            showCreate() {
-                this.displayModal = !this.displayModal;
-            },
-
-            addTodo() {
-
+            isValid() {
                 let valid = true;
                 if(!this.todo.title) {
                     valid = false;
@@ -168,7 +163,27 @@
                     this.invalid.description = true;
                 }
 
-                if(!valid) {
+                return valid;
+            },
+
+            resetValidation() {
+                this.invalid.title = false;
+                this.invalid.description = false;
+            },
+
+            resetTodo() {
+                this.todo.title = '';
+                this.todo.description = '';
+                this.todo.progress = 'todo';
+            },
+
+            showCreate() {
+                this.displayModal = !this.displayModal;
+                this.resetValidation();
+            },
+
+            addTodo() {
+                if(!this.isValid()) {
                     return;
                 }
 
@@ -179,19 +194,22 @@
                     progress : 'todo',
                 };
 
+                this.storeTodo(todo);
+
+                this.displayModal = false;
+                this.resetValidation();
+            },
+
+            storeTodo(todo) {
                 this.todos.push(todo);
 
-                this.todo.title = '';
-                this.todo.description = '';
-                this.todo.progress = 'todo';
+                this.resetTodo();
 
                 let todos = LocalStorage.get('todos');
 
                 todos.push(todo);
 
                 LocalStorage.set('todos', todos);
-
-                this.displayModal = false;
             },
 
             markComplete(id) {
