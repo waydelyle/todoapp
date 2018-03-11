@@ -261,8 +261,10 @@
     }
 
     footer {
+        background-color:#FFFFFF;
         position:fixed;
         padding:15px;
+        height:90px;
         width:100%;
         bottom:0;
     }
@@ -272,8 +274,9 @@
     }
 
     .card {
-        max-width:300px;
         margin:0 15px 15px 0;
+        min-height:300px;
+        min-width:285px;
     }
 
     .todo {
@@ -281,57 +284,56 @@
     }
 
     .modal-mask {
-        position: fixed;
-        z-index: 9998;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, .5);
-        display: table;
-        transition: opacity .3s ease;
+        background-color:rgba(0, 0, 0, .5);
+        transition:opacity .3s ease;
+        position:fixed;
+        display:table;
+        z-index:9998;
+        height:100%;
+        width:100%;
+        left:0;
+        top:0;
     }
 
     .modal-wrapper {
-        display: table-cell;
-        vertical-align: middle;
+        vertical-align:middle;
+        display:table-cell;
     }
 
     .modal-container {
-        width: 500px;
-        margin: 0px auto;
-        padding: 20px 30px;
-        background-color: #fff;
-        border-radius: 2px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
-        transition: all .3s ease;
-        font-family: Helvetica, Arial, sans-serif;
+        box-shadow:0 2px 8px rgba(0, 0, 0, .33);
+        transition:all .3s ease;
+        background-color:#fff;
+        border-radius:2px;
+        padding:20px 30px;
+        margin:0 auto;
+        width:500px;
     }
 
     .modal-header h3 {
-        margin-top: 0;
-        color: #42b983;
+        color:#42b983;
+        margin-top:0;
     }
 
     .modal-body {
-        margin: 20px 0;
+        margin:20px 0;
     }
 
     .modal-default-button {
-        float: right;
+        float:right;
     }
 
     .modal-enter {
-        opacity: 0;
+        opacity:0;
     }
 
     .modal-leave-active {
-        opacity: 0;
+        opacity:0;
     }
 
     .modal-enter .modal-container,
     .modal-leave-active .modal-container {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
+        -webkit-transform:scale(1.1);
+        transform:scale(1.1);
     }
 </style>
