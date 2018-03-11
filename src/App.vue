@@ -1,61 +1,31 @@
 <template>
     <div id="app">
-        <div class="container">
-            <hr>
-            <div class="row">
-                <div class="col">
-                    <div class="jumbotron">
-                        <h1 class="display-4">TodoApp</h1>
-                        <p class="lead">Your personal todo list.</p>
-                        <hr class="my-4">
-                        <p class="lead">
-                            <button class="btn btn-primary btn-lg" v-on:click="showCreate" role="button">
-                                Add Todo
-                            </button>
-                        </p>
+        <header>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <h1>
+                            Todo
+                            <span class="badge badge-info">APP</span>
+                        </h1>
                     </div>
-                </div>
-                <transition name="fade">
-                    <div class="col" v-show="displayCreate">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    New Todo
-                                </h5>
-                                <div class="form-group">
-                                    <label for="title">Title</label>
-                                    <input type="email" class="form-control" id="title" placeholder="Title" maxlength="30" min="1" v-model="todo.title">
-                                </div>
-                                <div class="form-group">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" placeholder="Description" maxlength="150" rows="3" v-model="todo.description"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-lg" v-on:click="addTodo">Save</button>
-                                <button class="btn btn-danger btn-lg" v-on:click="showCreate" role="button">Cancel</button>
-                            </div>
+                    <div class="col text-right">
+                        <div class="btn-group margin-top-5px" role="group">
+                            <button type="button" class="btn btn-lg btn-outline-info" :class="{ active:isActive('all') }" v-on:click="filter = 'all'">All</button>
+                            <button type="button" class="btn btn-lg btn-outline-info" :class="{ active:isActive('todo') }"v-on:click="filter = 'todo'">To do</button>
+                            <button type="button" class="btn btn-lg btn-outline-info" :class="{ active:isActive('complete') }"v-on:click="filter = 'complete'">Complete</button>
                         </div>
                     </div>
-                </transition>
-            </div>
-            <div class="row">
-                <div class="col text-left">
-                    <button class="btn btn-outline-success btn-sm" v-on:click="markAllComplete" role="button">All complete</button>
-                </div>
-                <div class="col text-right">
-                    <button class="btn btn-outline-danger btn-sm" v-on:click="deleteAll" role="button">Delete All</button>
-                </div>
-            </div>
-            <hr>
-            <div class="row">
-                <div class="col text-center">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-outline-info" :class="{ active:isActive('all') }" v-on:click="filter = 'all'">All</button>
-                        <button type="button" class="btn btn-outline-info" :class="{ active:isActive('todo') }"v-on:click="filter = 'todo'">To do</button>
-                        <button type="button" class="btn btn-outline-info" :class="{ active:isActive('complete') }"v-on:click="filter = 'complete'">Complete</button>
+                    <div class="col">
+                        <button class="btn btn-info btn-lg float-right margin-top-5px" v-on:click="showCreate" role="button">
+                            New Todo
+                        </button>
                     </div>
                 </div>
+                <hr>
             </div>
-            <hr>
+        </header>
+        <div class="container-fluid">
             <div class="row">
                 <div v-for="todo in todos">
                     <div class="card" v-if="filter === 'all' || filter === todo.progress">
@@ -85,6 +55,77 @@
                 </div>
             </div>
         </div>
+        <footer>
+            <div class="container-fluid">
+                <hr>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-outline-success btn-sm float-left" v-on:click="markAllComplete" role="button">All complete</button>
+                        <button class="btn btn-outline-danger btn-sm float-right" v-on:click="deleteAll" role="button">Delete All</button>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <transition name="modal">
+            <div class="modal-mask" v-show="displayModal">
+                <div class="modal-wrapper">
+                    <div class="modal-container">
+
+                        <div class="modal-header">
+                            <slot name="header">
+                                New Todo
+                            </slot>
+                        </div>
+
+                        <div class="modal-body">
+                            <slot name="body">
+                                <div class="form-group">
+                                    <input
+                                           class="form-control"
+                                           v-bind:class="{ 'is-invalid':invalid.title }"
+                                           id="title"
+                                           placeholder="Title"
+                                           maxlength="30"
+                                           min="1"
+                                           v-model="todo.title"
+                                    >
+                                </div>
+                                <div class="form-group">
+                                    <textarea
+                                            class="form-control"
+                                            v-bind:class="{ 'is-invalid':invalid.description }"
+                                            id="description"
+                                            placeholder="Description"
+                                            maxlength="150"
+                                            rows="3"
+                                            v-model="todo.description"
+                                    >
+                                    </textarea>
+                                </div>
+                            </slot>
+                        </div>
+
+                        <div class="modal-footer">
+                            <slot name="footer">
+                                <button
+                                        class="btn btn-info btn-sm"
+                                        v-on:click="addTodo"
+                                >
+                                    Save
+                                </button>
+                                <button
+                                        class="btn btn-danger btn-sm"
+                                        v-on:click="showCreate"
+                                >
+                                    Cancel
+                                </button>
+                            </slot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -111,11 +152,23 @@
             },
 
             showCreate() {
-                this.displayCreate = !this.displayCreate;
+                this.displayModal = !this.displayModal;
             },
 
             addTodo() {
-                if(!this.todo.title || !this.todo.description) {
+
+                let valid = true;
+                if(!this.todo.title) {
+                    valid = false;
+                    this.invalid.title = true;
+                }
+
+                if(!this.todo.description) {
+                    valid = false;
+                    this.invalid.description = true;
+                }
+
+                if(!valid) {
                     return;
                 }
 
@@ -137,6 +190,8 @@
                 todos.push(todo);
 
                 LocalStorage.set('todos', todos);
+
+                this.displayModal = false;
             },
 
             markComplete(id) {
@@ -172,7 +227,11 @@
         data() {
             return {
                 filter: 'all',
-                displayCreate: false,
+                displayModal: false,
+                invalid: {
+                    title: false,
+                    description: false,
+                },
                 todo: {
                     title: '',
                     description: '',
@@ -187,16 +246,88 @@
 <style lang="scss">
     @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
+    #app {
+        margin-bottom:100px;
+    }
+
+    .container-fluid {
+        margin-right:auto;
+        margin-left:auto;
+        max-width:900px;
+    }
+
+    header {
+        padding:15px;
+    }
+
+    footer {
+        position:fixed;
+        padding:15px;
+        width:100%;
+        bottom:0;
+    }
+
+    .margin-top-5px {
+        margin-top:5px;
+    }
+
     .card {
         max-width:300px;
         margin:0 15px 15px 0;
     }
 
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .3s;
+    .modal-mask {
+        position: fixed;
+        z-index: 9998;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .5);
+        display: table;
+        transition: opacity .3s ease;
     }
 
-    .fade-enter, .fade-leave-to {
+    .modal-wrapper {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    .modal-container {
+        width: 500px;
+        margin: 0px auto;
+        padding: 20px 30px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+        transition: all .3s ease;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+
+    .modal-header h3 {
+        margin-top: 0;
+        color: #42b983;
+    }
+
+    .modal-body {
+        margin: 20px 0;
+    }
+
+    .modal-default-button {
+        float: right;
+    }
+
+    .modal-enter {
         opacity: 0;
+    }
+
+    .modal-leave-active {
+        opacity: 0;
+    }
+
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
     }
 </style>
