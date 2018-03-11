@@ -34,9 +34,11 @@
                         </div>
                         <div class="card-body">
                             <p class="card-text">{{ todo.description }}</p>
+                        </div>
+                        <div class="card-footer">
                             <button
                                     type="submit"
-                                    class="btn btn-outline-info"
+                                    class="btn btn-sm btn-outline-info"
                                     v-on:click="markComplete(todo.id)"
                                     v-if="todo.progress === 'todo'"
                             >
@@ -44,7 +46,7 @@
                             </button>
                             <button
                                     type="submit"
-                                    class="btn btn-outline-secondary"
+                                    class="btn btn-sm btn-outline-secondary"
                                     v-on:click="markTodo(todo.id)"
                                     v-else=""
                             >
