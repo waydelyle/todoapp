@@ -29,14 +29,14 @@
             <div class="row">
                 <div v-for="todo in todos">
                     <div class="card" v-if="filter === 'all' || filter === todo.progress">
-                        <div class="card-header">
+                        <div class="card-header" :class="todo.progress">
                             <h5 class="card-title">{{ todo.title }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="card-text">{{ todo.description }}</p>
                             <button
                                     type="submit"
-                                    class="btn btn-outline-success"
+                                    class="btn btn-outline-info"
                                     v-on:click="markComplete(todo.id)"
                                     v-if="todo.progress === 'todo'"
                             >
@@ -44,7 +44,7 @@
                             </button>
                             <button
                                     type="submit"
-                                    class="btn btn-outline-info"
+                                    class="btn btn-outline-secondary"
                                     v-on:click="markTodo(todo.id)"
                                     v-else=""
                             >
@@ -274,6 +274,10 @@
     .card {
         max-width:300px;
         margin:0 15px 15px 0;
+    }
+
+    .todo {
+        background-color:#17a2b8;
     }
 
     .modal-mask {
